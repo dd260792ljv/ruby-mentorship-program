@@ -2,3 +2,6 @@
 
 Documentation:
   Enabled: false
+
+Style/MixinUsage:
+  Enabled: false

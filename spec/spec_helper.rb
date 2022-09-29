@@ -6,8 +6,12 @@ require 'require_all'
 require 'selenium-webdriver'
 require 'site_prism'
 
+require_all 'lib'
 require_all 'pages'
 require_all 'models'
+require_all 'spec/support'
+
+include ApiHelper
 
 def options
   Selenium::WebDriver::Chrome::Options.new(args: %w[window-size=1800,1000])
