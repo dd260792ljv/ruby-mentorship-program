@@ -27,6 +27,6 @@ module ApiHelper
   end
 
   def headers
-    { Authorization: 'Bearer FKzy_BpV5wAybKf7Z9JX' }
+    { Authorization: ENV['API_KEY'] }
   end
 end

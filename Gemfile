@@ -3,6 +3,7 @@
 source 'http://rubygems.org/'
 
 gem 'capybara'
+gem 'dotenv'
 gem 'factory_bot'
 gem 'ffaker'
 gem 'require_all'

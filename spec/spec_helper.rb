@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'capybara/rspec'
+require 'dotenv/load'
 require 'factory_bot'
 require 'require_all'
 require 'selenium-webdriver'
