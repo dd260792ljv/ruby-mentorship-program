@@ -9,6 +9,7 @@ class SignInPage < SitePrism::Page
   element :register_link, '#signin-container > p > a'
 
   def sign_in_user(user)
+    load
     email.set user.email
     password.set user.password
     sign_in_btn.click

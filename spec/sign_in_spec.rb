@@ -7,7 +7,6 @@ feature 'Sign in user', js: true do
   before(:all) do
     @user = build(:user)
     create_user(@user)
-    sign_in_page.load
   end
 
   after(:all) do

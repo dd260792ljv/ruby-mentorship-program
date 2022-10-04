@@ -8,7 +8,8 @@ require 'selenium-webdriver'
 require 'site_prism'
 
 require_all 'lib'
-require_all 'pages'
+require_all 'page_objects/sections'
+require_all 'page_objects/pages'
 require_all 'models'
 require_all 'spec/support'
 
@@ -22,6 +23,7 @@ Capybara.default_driver = :selenium
 Capybara.register_driver :selenium do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
+Capybara.default_max_wait_time = 20
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods

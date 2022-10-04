@@ -5,3 +5,6 @@ Documentation:
 
 Style/MixinUsage:
   Enabled: false
+
+Metrics/BlockLength:
+  Max: 35
