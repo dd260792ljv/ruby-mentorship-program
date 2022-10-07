@@ -7,4 +7,4 @@ Style/MixinUsage:
   Enabled: false
 
 Metrics/BlockLength:
-  Max: 35
+  Max: 40

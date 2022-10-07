@@ -6,8 +6,8 @@ feature 'Create project', js: true do
   let(:new_project_page) { NewProjectPage.new }
   let(:project_page) { ProjectPage.new }
 
-  project_1 = 'Test_Project_1'
-  project_2 = 'Test_Project_2'
+  project1 = 'Test_Project_1'
+  project2 = 'Test_Project_2'
   projects_count = 2
 
   before(:all) do
@@ -27,20 +27,20 @@ feature 'Create project', js: true do
     dashboard_page.create_project_link.click
     expect(new_project_page.title.text).to eq('Create new project')
     new_project_page.create_blank_project_link.click
-    new_project_page.create_project(project_1)
-    expect(new_project_page).to have_content("Project \'#{project_1}\' was successfully created.")
+    new_project_page.create_project(project1)
+    expect(page).to have_content("Project \'#{project1}\' was successfully created.")
   end
 
   scenario 'User can create project from template' do
     new_project_page.select_template('Ruby on Rails')
     expect(new_project_page.selected_template.text).to eq('Ruby on Rails')
-    new_project_page.create_project(project_2)
+    new_project_page.create_project(project2)
     expect(page).to have_content('The project was successfully imported.')
   end
 
   scenario 'User can open project from dashboard' do
     expect(dashboard_page.projects_row.count).to eq projects_count
-    dashboard_page.open_project(project_2)
-    expect(project_page.project_name.text).to eq project_2
+    dashboard_page.open_project(project2)
+    expect(project_page.project_name.text).to eq project2
   end
 end

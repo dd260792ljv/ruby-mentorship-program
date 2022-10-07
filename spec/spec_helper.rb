@@ -15,13 +15,11 @@ require_all 'spec/support'
 
 include ApiHelper
 
-def options
-  Selenium::WebDriver::Chrome::Options.new(args: %w[window-size=1800,1000])
-end
+options = Selenium::WebDriver::Chrome::Options.new(args: %w[window-size=1800,1000])
 
 Capybara.default_driver = :selenium
 Capybara.register_driver :selenium do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, capabilities: [options])
 end
 Capybara.default_max_wait_time = 20
 
@@ -30,4 +28,5 @@ RSpec.configure do |config|
   config.before(:suite) do
     FactoryBot.find_definitions
   end
+  config.example_status_persistence_file_path = '.rspec_status'
 end

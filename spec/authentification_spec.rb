@@ -26,7 +26,7 @@ feature 'Authentication user', js: true do
   scenario 'User can login' do
     sign_in_page.sign_in_user(@user)
     expect(dashboard_page).to have_content('Welcome to GitLab')
-    dashboard_page.header.profile_btn.click
+    dashboard_page.profile.root_element.click
     expect(dashboard_page.profile.current_user.text).to include(@user.first_name, @user.last_name, @user.username)
   end
 

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class NewProjectPage < SitePrism::Page
-  section :header, HeaderSection, '.navbar.navbar-gitlab'
   section :menu, MenuSection, '[data-qa-title=Menu]'
 
   element :title, '.gl-display-flex > h2'
@@ -18,7 +17,7 @@ class NewProjectPage < SitePrism::Page
   end
 
   def select_template(template)
-    header.menu_btn.click
+    menu.root_element.click
     menu.new_project_btn.click
     create_template_project_link.click
     use_template(template)
