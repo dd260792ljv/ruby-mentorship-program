@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'capybara/rspec'
+require 'capybara-screenshot/rspec'
 require 'dotenv/load'
 require 'factory_bot'
 require 'require_all'
@@ -21,7 +22,20 @@ Capybara.default_driver = :selenium
 Capybara.register_driver :selenium do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, capabilities: [options])
 end
-Capybara.default_max_wait_time = 20
+
+Capybara.default_max_wait_time = 15
+
+Capybara.save_path = File.join(Dir.pwd, '/tmp/screenshots')
+Capybara::Screenshot.append_timestamp = false
+Capybara::Screenshot.prune_strategy = :keep_last_run
+Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
+  example.full_description.downcase.parameterize(separator: '_')
+end
+Capybara::Screenshot.register_driver(:selenium) do |driver, path|
+  driver.browser.save_screenshot path
+end
+
+Capybara::Screenshot.autosave_html = false
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
