@@ -18,7 +18,7 @@ feature 'Authentication user', js: true do
 
   scenario 'User can register' do
     sign_up_page.sign_up_user(@user)
-    expect(welcome_page.title.text).to include(@user.first_name)
+    wait_for(welcome_page.title.text).to include(@user.first_name)
     welcome_page.select_role('Software Developer', 'I want to store my code')
     expect(dashboard_page).to have_content('Welcome to GitLab')
   end

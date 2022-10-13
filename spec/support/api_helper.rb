@@ -3,27 +3,43 @@
 require 'rest-client'
 
 module ApiHelper
-  def create_user(user)
-    response = RestClient.post "#{CommonVars::BASE_URL}/api/v4/users",
-                               {
-                                 "name": "#{user.first_name} #{user.last_name}",
-                                 "username": user.username,
-                                 "email": user.email,
-                                 "password": user.password,
-                                 "skip_confirmation": true
-                               },
-                               headers
-    raise 'User was not created' unless response.code == 201
+  VALID_RESPONSE_CODE = 200
+  CREATED_RESPONSE_CODE = 201
+  NO_CONTENT_RESPONSE_CODE = 204
+  NOT_FOUND_ERROR_CODE = 404
+
+  def basic_request(method, url, opts = {})
+    RestClient::Request.new({
+                              method: method,
+                              url: "#{CommonVars::BASE_URL}/api/v4/#{url}",
+                              headers: headers,
+                              payload: opts[:payload].nil? ? nil : opts[:payload]
+                            }).execute
+  end
+
+  def create_user(user, opts = {})
+    payload = {
+      "name": "#{user.first_name} #{user.last_name}",
+      "username": user.username,
+      "email": user.email,
+      "password": user.password,
+      "skip_confirmation": true
+    }
+    opts[:payload] = payload
+    basic_request(:post, '/users', opts)
   end
 
   def get_user_by_name(username)
-    RestClient.get "#{CommonVars::BASE_URL}/api/v4/users?username=#{username}", headers
+    basic_request(:get, "/users?username=#{username}")
+  end
+
+  def get_user_status(username)
+    basic_request(:get, "/users/#{username}/status")
   end
 
   def delete_user(username)
     user_id = JSON.parse(get_user_by_name(username).body)[0]['id']
-    response = RestClient.delete "#{CommonVars::BASE_URL}/api/v4/users/#{user_id}", headers
-    raise 'User was not deleted' unless response.code == 204
+    basic_request(:delete, "/users/#{user_id}")
   end
 
   def headers

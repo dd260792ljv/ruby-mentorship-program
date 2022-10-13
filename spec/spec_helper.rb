@@ -5,6 +5,7 @@ require 'capybara-screenshot/rspec'
 require 'dotenv/load'
 require 'factory_bot'
 require 'require_all'
+require "rspec/wait"
 require 'selenium-webdriver'
 require 'site_prism'
 
@@ -35,12 +36,11 @@ Capybara::Screenshot.register_driver(:selenium) do |driver, path|
   driver.browser.save_screenshot path
 end
 
-Capybara::Screenshot.autosave_html = false
-
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.before(:suite) do
     FactoryBot.find_definitions
   end
   config.example_status_persistence_file_path = '.rspec_status'
+  config.wait_timeout = 5
 end

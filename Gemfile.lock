@@ -78,6 +78,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.1)
+    rspec-wait (0.0.9)
+      rspec (>= 3, < 4)
     rubocop (1.36.0)
       json (~> 2.3)
       parallel (~> 1.10)
@@ -123,6 +125,7 @@ DEPENDENCIES
   require_all
   rest-client
   rspec
+  rspec-wait
   rubocop
   selenium-webdriver
   site_prism
