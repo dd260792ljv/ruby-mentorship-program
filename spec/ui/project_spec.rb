@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-feature 'Create project', js: true do
+feature 'Create project', :ui, js: true do
   sign_in_page = SignInPage.new
   let(:dashboard_page) { DashboardPage.new }
   let(:new_project_page) { NewProjectPage.new }
@@ -23,7 +23,7 @@ feature 'Create project', js: true do
     delete_user(@user.username)
   end
 
-  scenario 'User can create blank project' do
+  scenario 'User can create blank project', severity: :critical do
     dashboard_page.create_project_link.click
     expect(new_project_page.title.text).to eq('Create new project')
     new_project_page.create_blank_project_link.click
@@ -31,14 +31,14 @@ feature 'Create project', js: true do
     expect(page).to have_content("Project \'#{project1}\' was successfully created.")
   end
 
-  scenario 'User can create project from template' do
+  scenario 'User can create project from template', severity: :minor do
     new_project_page.select_template('Ruby on Rails')
     expect(new_project_page.selected_template.text).to eq('Ruby on Rails')
     new_project_page.create_project(project2)
     expect(page).to have_content('The project was successfully imported.')
   end
 
-  scenario 'User can open project from dashboard' do
+  scenario 'User can open project from dashboard', severity: :trivial do
     expect(dashboard_page.projects_row.count).to eq projects_count
     dashboard_page.open_project(project2)
     expect(project_page.project_name.text).to eq project2

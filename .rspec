@@ -1,3 +1,5 @@
 --format documentation
 --color
+--format RspecJunitFormatter --out tmp/rspec_junit.xml
+--format AllureRspecFormatter
 --require spec_helper

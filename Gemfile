@@ -2,14 +2,15 @@
 
 source 'http://rubygems.org/'
 
+gem 'allure-rspec'
 gem 'capybara'
-gem 'capybara-screenshot'
 gem 'dotenv'
 gem 'factory_bot'
 gem 'ffaker'
 gem 'require_all'
 gem 'rest-client'
 gem 'rspec'
+gem 'rspec_junit_formatter'
 gem 'rspec-wait'
 gem 'rubocop'
 gem 'selenium-webdriver'

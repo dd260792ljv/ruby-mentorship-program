@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'allure-rspec'
 require 'capybara/rspec'
-require 'capybara-screenshot/rspec'
 require 'dotenv/load'
 require 'factory_bot'
 require 'require_all'
@@ -26,14 +26,12 @@ end
 
 Capybara.default_max_wait_time = 15
 
-Capybara.save_path = File.join(Dir.pwd, '/tmp/screenshots')
-Capybara::Screenshot.append_timestamp = false
-Capybara::Screenshot.prune_strategy = :keep_last_run
-Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-  example.full_description.downcase.parameterize(separator: '_')
-end
-Capybara::Screenshot.register_driver(:selenium) do |driver, path|
-  driver.browser.save_screenshot path
+
+
+AllureRspec.configure do |config|
+  config.results_directory = 'tmp/allure-results'
+  config.clean_results_directory = true
+  config.severity_tag = :severity
 end
 
 RSpec.configure do |config|
@@ -41,6 +39,24 @@ RSpec.configure do |config|
   config.before(:suite) do
     FactoryBot.find_definitions
   end
-  config.example_status_persistence_file_path = '.rspec_status'
+
+  config.example_status_persistence_file_path = 'tmp/.rspec_status'
+
   config.wait_timeout = 5
+
+  config.after(:each, :ui) do |example|
+    if example.exception
+      screenshot_name = example.full_description.downcase.split.join('_')
+      screenshot_path = "#{File.join(Dir.pwd, "/tmp/screenshots/#{screenshot_name}.png")}"
+      Capybara.save_screenshot(screenshot_path)
+      puts  "Screenshot Taken: #{screenshot_path}\n"
+
+      Allure.add_attachment(
+        name: 'Attachment',
+        source: File.open(screenshot_path),
+        type: Allure::ContentType::PNG,
+        test_case: true
+      )
+    end
+  end
 end
