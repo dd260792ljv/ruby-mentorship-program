@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-feature 'Create project', :ui, js: true do
+feature 'Create project', js: true do
   sign_in_page = SignInPage.new
   let(:dashboard_page) { DashboardPage.new }
   let(:new_project_page) { NewProjectPage.new }

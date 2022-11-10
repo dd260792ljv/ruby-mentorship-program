@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-feature 'Authentication user', :ui, js: true do
+feature 'Authentication user', js: true do
   sign_in_page = SignInPage.new
   let(:sign_up_page) { SignUpPage.new }
   let(:welcome_page) { WelcomePage.new }
@@ -8,8 +8,6 @@ feature 'Authentication user', :ui, js: true do
 
   before(:all) do
     @user = build(:user)
-    sign_in_page.load
-    sign_in_page.register_link.click
   end
 
   after(:all) do

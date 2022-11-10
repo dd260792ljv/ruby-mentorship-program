@@ -5,6 +5,7 @@ require 'capybara/rspec'
 require 'dotenv/load'
 require 'factory_bot'
 require 'require_all'
+require 'rspec/retry'
 require "rspec/wait"
 require 'selenium-webdriver'
 require 'site_prism'
@@ -26,8 +27,6 @@ end
 
 Capybara.default_max_wait_time = 15
 
-
-
 AllureRspec.configure do |config|
   config.results_directory = 'tmp/allure-results'
   config.clean_results_directory = true
@@ -40,13 +39,23 @@ RSpec.configure do |config|
     FactoryBot.find_definitions
   end
 
+  config.before(:all) do
+    FileUtils.rm_rf(Dir.glob(File.join(Dir.pwd, '/tmp/screenshots/*.png')))
+  end
+
   config.example_status_persistence_file_path = 'tmp/.rspec_status'
 
   config.wait_timeout = 5
 
-  config.after(:each, :ui) do |example|
+  config.verbose_retry = true
+  config.display_try_failure_messages = true
+  config.around (:each) do |example|
+    example.run_with_retry retry: 2
+  end
+
+  config.after(:each, :js) do |example|
     if example.exception
-      screenshot_name = example.full_description.downcase.split.join('_')
+      screenshot_name = (example.description.downcase + " #{Time.now.to_i}").split.join('_')
       screenshot_path = "#{File.join(Dir.pwd, "/tmp/screenshots/#{screenshot_name}.png")}"
       Capybara.save_screenshot(screenshot_path)
       puts  "Screenshot Taken: #{screenshot_path}\n"
