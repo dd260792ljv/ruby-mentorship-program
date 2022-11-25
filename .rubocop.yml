@@ -8,3 +8,6 @@ Style/MixinUsage:
 
 Metrics/BlockLength:
   Max: 40
+
+Metrics/AbcSize:
+  Max: 20
