@@ -44,6 +44,8 @@ RSpec.configure do |config|
     FactoryBot.find_definitions
   end
 
+  config.formatter = AllureRspecFormatter
+
   if ENV['BROWSER'] == 'chrome'
     config.example_status_persistence_file_path = 'tmp/.rspec_chrome_status'
   elsif ENV['BROWSER'] == 'firefox'
@@ -68,5 +70,7 @@ RSpec.configure do |config|
         test_case: true
       )
     end
+    Allure.parameter('BROWSER',  ENV['BROWSER'])
+    Allure.suite(ENV['BROWSER'])
   end
 end
