@@ -5,7 +5,6 @@ require 'capybara/rspec'
 require 'dotenv/load'
 require 'factory_bot'
 require 'require_all'
-require 'rspec/retry'
 require 'rspec/wait'
 require 'selenium-webdriver'
 require 'site_prism'
@@ -18,15 +17,28 @@ require_all 'spec/support'
 
 include ApiHelper
 
+if ENV['REMOTE']
+  Capybara.javascript_driver = :remote_selenium
+else
+  Capybara.default_driver = :selenium
+end
+
 chrome_options = Selenium::WebDriver::Chrome::Options.new(args: %w[window-size=1800,1000])
 firefox_options = Selenium::WebDriver::Firefox::Options.new(args: %w[window-size=1800,1000])
 
-Capybara.default_driver = :selenium
 Capybara.register_driver :selenium do |app|
   if ENV['BROWSER'] == 'chrome' || ENV['BROWSER'].nil?
     Capybara::Selenium::Driver.new(app, browser: :chrome, capabilities: [chrome_options])
   elsif ENV['BROWSER'] == 'firefox'
     Capybara::Selenium::Driver.new(app, browser: :firefox, capabilities: [firefox_options])
+  end
+end
+
+Capybara.register_driver :remote_selenium do |app|
+  if ENV['BROWSER'] == 'chrome' || ENV['BROWSER'].nil?
+    Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: [chrome_options])
+  elsif ENV['BROWSER'] == 'firefox'
+    Capybara::Selenium::Driver.new(app, browser: :firefox, url: "http://localhost:4444/wd/hub", capabilities: [firefox_options])
   end
 end
 
@@ -70,7 +82,7 @@ RSpec.configure do |config|
         test_case: true
       )
     end
-    Allure.parameter('BROWSER',  ENV['BROWSER'])
+    Allure.parameter('BROWSER', ENV['BROWSER'])
     Allure.suite(ENV['BROWSER'])
   end
 end
