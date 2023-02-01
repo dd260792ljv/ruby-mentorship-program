@@ -10,20 +10,23 @@ task :clean_directories do
   FileUtils.rm_rf(Dir.glob(File.join(Dir.pwd, '/tmp/.*status')))
 end
 
-task :merge_junit_reports do
-  if File.exist?('tmp/junit_reports/rspec_junit_chrome_rerun.xml')
-    sh 'junit_merge tmp/junit_reports/rspec_junit_chrome_rerun.xml tmp/junit_reports/rspec_junit_chrome.xml'
-  end
-  if File.exist?('tmp/junit_reports/rspec_junit_firefox_rerun.xml')
-    sh 'junit_merge tmp/junit_reports/rspec_junit_firefox_rerun.xml tmp/junit_reports/rspec_junit_firefox.xml'
-  end
-  if File.exist?('tmp/junit_reports/rspec_junit_api_rerun.xml')
-    sh 'junit_merge tmp/junit_reports/rspec_junit_api_rerun.xml tmp/junit_reports/rspec_junit_api.xml'
+task :merge_junit_report do
+  file_names = Dir.entries('tmp/junit_reports/').delete_if { |entry| File.directory?(entry) }
+  file_names.each do |file_name|
+    case file_name
+    when /chrome/
+      sh "junit_merge tmp/junit_reports/#{file_name} tmp/junit_reports/rspec_junit_chrome.xml"
+    when /firefox/
+      sh "junit_merge tmp/junit_reports/#{file_name} tmp/junit_reports/rspec_junit_firefox.xml"
+    when /api/
+      sh "junit_merge tmp/junit_reports/#{file_name} tmp/junit_reports/rspec_junit_api.xml"
+    end
   end
 end
 
 task :clean_additional_reports do
-  FileUtils.rm_rf(Dir.glob(File.join(Dir.pwd, '/tmp/junit_reports/*rerun.xml')))
+  file_names = Dir.entries('tmp/junit_reports/').select { |f| f =~ /[0-9]|rerun/ }
+  file_names.each { |f| File.delete(File.join(Dir.pwd,"tmp/junit_reports/#{f}")) }
 end
 
 task :add_allure_report_history do
@@ -87,6 +90,37 @@ end
 
 task :parallel_flow do
   %w[clean_directories run_parallel rerun_parallel merge_junit_reports
+     modify_allure_report add_allure_report_history generate_allure_report clean_additional_reports].each do |task|
+    sh "rake #{task}" do
+    end
+  end
+end
+
+task :multi_browser_run_test do
+  sh "parallel_rspec " +
+       "-n #{ENV['TEST_ENV_NUMBER']} " +
+       "-o '-t js'"
+end
+
+task :multi_browser_flow do
+  %w[clean_directories multi_browser_run_test rerun_test merge_junit_report
+     modify_allure_report add_allure_report_history generate_allure_report clean_additional_reports].each do |task|
+    sh "rake #{task}" do
+    end
+  end
+end
+
+task :multi_browser_run_parallel do
+  t1 = Thread.new { system 'BROWSER=chrome TEST_ENV_NUMBER=2 rake multi_browser_run_test' }
+  t2 = Thread.new { system 'BROWSER=firefox TEST_ENV_NUMBER=2 rake multi_browser_run_test' }
+  t3 = Thread.new { system 'rake run_test' }
+  t1.join
+  t2.join
+  t3.join
+end
+
+task :multi_browser_parallel_flow do
+  %w[clean_directories multi_browser_run_parallel rerun_parallel merge_junit_report
      modify_allure_report add_allure_report_history generate_allure_report clean_additional_reports].each do |task|
     sh "rake #{task}" do
     end
