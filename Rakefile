@@ -43,13 +43,16 @@ end
 task :modify_allure_report do
   files = Dir.glob(File.join(Dir.pwd, '/tmp/allure-results/*-result.json'))
   files.each do |f|
-    if File.read(f).each_line.any? { |line| line.include?('chrome') }
-      file = File.read(f)
-      data_hash = JSON.parse(file)
+    file = File.read(f)
+    data_hash = JSON.parse(file)
+    if file.each_line.any? { |line| line.include?('chrome') }
       data_hash['labels'].select { |x| x['name'] == 'thread' }.first['value'] += 1
       data_hash['historyId'] += '1'
-      File.write(f, JSON.dump(data_hash))
+    elsif file.each_line.any? { |line| line.include?('firefox') }
+      data_hash['labels'].select { |x| x['name'] == 'thread' }.first['value'] += 2
+      data_hash['historyId'] += '2'
     end
+    File.write(f, JSON.dump(data_hash))
   end
 end
 

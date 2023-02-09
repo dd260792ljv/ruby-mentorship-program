@@ -21,7 +21,7 @@ feature 'Flaky test', js: true do
     end
   end
 
-  scenario 'Edit file', :test do
+  scenario 'Edit file', severity: :minor do
     sign_in_page.load
     if ENV['BROWSER'] == 'chrome'
       expect(File.read(@path1)).to eq('1')

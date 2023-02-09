@@ -38,9 +38,9 @@ end
 
 Capybara.register_driver :remote_selenium do |app|
   if ENV['BROWSER'] == 'chrome' || ENV['BROWSER'].nil?
-    Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: [chrome_options])
+    Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://65.109.129.1:4444/wd/hub", capabilities: [chrome_options])
   elsif ENV['BROWSER'] == 'firefox'
-    Capybara::Selenium::Driver.new(app, browser: :firefox, url: "http://localhost:4444/wd/hub", capabilities: [firefox_options])
+    Capybara::Selenium::Driver.new(app, browser: :firefox, url: "http://65.109.129.1:4444/wd/hub", capabilities: [firefox_options])
   end
 end
 
