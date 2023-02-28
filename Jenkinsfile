@@ -26,6 +26,9 @@ pipeline {
                             results: [[path: 'tmp/allure-results']]
                     ])
                 }
+                sh 'rake merge_junit_report'
+                sh 'rake clean_additional_reports'
+                junit 'tmp/junit_reports/*.xml'
             }
         }
     }
