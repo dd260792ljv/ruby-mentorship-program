@@ -66,7 +66,7 @@ task :rerun_test do
 end
 
 task :flow do
-  %w[clean_directories run_test rerun_test merge_junit_reports
+  %w[clean_directories run_test rerun_test merge_junit_report
      add_allure_report_history generate_allure_report clean_additional_reports].each do |task|
     sh "rake #{task}" do
     end
@@ -92,7 +92,7 @@ task :rerun_parallel do
 end
 
 task :parallel_flow do
-  %w[clean_directories run_parallel rerun_parallel merge_junit_reports
+  %w[clean_directories run_parallel rerun_parallel merge_junit_report
      modify_allure_report add_allure_report_history generate_allure_report clean_additional_reports].each do |task|
     sh "rake #{task}" do
     end
