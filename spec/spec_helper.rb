@@ -24,6 +24,9 @@ else
 end
 
 chrome_options = Selenium::WebDriver::Chrome::Options.new(args: %w[window-size=1800,1000])
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--no-sandbox')
 firefox_options = Selenium::WebDriver::Firefox::Options.new
 firefox_options.add_argument('--width=1800')
 firefox_options.add_argument('--height=1000')
