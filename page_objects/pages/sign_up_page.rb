@@ -6,6 +6,7 @@ class SignUpPage < SitePrism::Page
   element :first_name, '#new_user_first_name'
   element :last_name, '#new_user_last_name'
   element :username, '#new_user_username'
+  element :username_valid, 'p.validation-success'
   element :email, '#new_user_email'
   element :password, '#new_user_password'
   element :submit_btn, '#new_new_user > div.submit-container > input'
@@ -15,6 +16,7 @@ class SignUpPage < SitePrism::Page
     first_name.set user.first_name
     last_name.set user.last_name
     username.set user.username
+    wait_until_username_valid_visible
     email.set user.email
     password.set user.password
     submit_btn.click
